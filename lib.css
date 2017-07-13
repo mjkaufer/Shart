@@ -1,0 +1,36 @@
+.shart-chart {
+	transform: rotate(-90deg);
+	display: inline-block;
+}
+
+.shart-val {
+	font-weight: bold;
+}
+
+.shart-chart > tbody > tr > td:nth-child(1) {
+	/*Align all keys closer to their data*/
+	text-align: right;
+	padding-right: 4px;
+}
+
+.shart-line > tbody > tr > td:nth-child(2) {
+    color: transparent;
+}
+
+.shart-line > tbody > tr > td:nth-child(2):first-letter {
+	color: black;
+}
+
+.shart-color tr:nth-child(2n+2) > td:nth-child(2) {
+	color: #27ae60;
+}
+
+.shart-color tr:nth-child(2n+1) > td:nth-child(2) {
+	color: #2980b9;
+}
+
+.shart-line > tbody > tr > td:nth-child(2) {
+    unicode-bidi:bidi-override;
+    direction:rtl;
+    text-align: left;
+}

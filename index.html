@@ -1,0 +1,116 @@
+<html>
+	<head>
+		<link rel="stylesheet" type="text/css" href="lib.css" />
+		<style>
+			table {
+				border: solid black 1px;
+			}
+		</style>
+	</head>
+	<body>
+
+		<h1>Shart.css - Lightweight, pure CSS charts</h1>
+		<h2></h2>
+		<h2>Check out the repo <a href="http://github.com/mjkaufer/Shart">here</a></h2>
+
+		<table class='shart-chart shart-line'>
+			<thead>
+				<tr>
+					<td colspan="2" style="text-align: center;">
+						<h2>Manually entered data</h2>
+					</td>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td>Apples</td>
+					<td>&#9703;&#9703;&#9703;</td>
+				</tr>
+				<tr>
+					<td>Oranges</td>
+					<td>&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;</td>
+				</tr>
+				<tr>
+					<td>Grapes</td>
+					<td>&#9703;&#9703;&#9703;&#9703;</td>
+				</tr>
+				<tr>
+					<td>Tomatoes</td>
+					<td>&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;</td>
+				</tr>
+				<tr>
+					<td>Pineapple</td>
+					<td>&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;&#9703;</td>
+				</tr>
+				<tr>
+					<td>Broccoli</td>
+					<td>&#9703;</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<table class='shart-chart shart-color'>
+			<thead>
+				<tr>
+					<td colspan="2" style="text-align: center;">
+						<h2>Stars on Matthew's Recent Repos</h2>
+						<h3>Data piped into Shart with JS</h3>
+						<h3>(Scaled)</h3>
+					</td>
+				</tr>
+			</thead>
+			<tbody id='chart-content'>
+				<tr>
+					<td colspan="2">
+						Loading...
+					</td>
+				</tr>
+			</tbody>
+		</table>
+
+		<script>
+			var request_url = 'https://api.github.com/users/mjkaufer/repos?sort=updated'
+			function httpGetAsync(theUrl, callback) {
+				var xmlHttp = new XMLHttpRequest();
+				xmlHttp.onreadystatechange = function() {
+					if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+						callback(xmlHttp.responseText);
+				}
+				xmlHttp.open("GET", theUrl, true); // true for asynchronous 
+				xmlHttp.send(null);
+			}
+
+			httpGetAsync(request_url, function(response) {
+				response = JSON.parse(response)
+				populateChart(response.filter(function(e){return e.stargazers_count > 0}).map(function(repo) {
+					return {
+						name: repo.name,
+						stars: repo.stargazers_count
+					}
+				}))
+			})
+
+			function populateChart(starRepoArr) {
+				console.log(starRepoArr)
+				var tableBody = document.getElementById('chart-content')
+				tableBody.innerHTML = ''
+				starRepoArr.forEach(function(e){
+					tableBody.appendChild(makeTableRowElement(e))
+				})
+			}
+
+			function makeTableRowElement(starRepoObject) {
+				var tr = document.createElement('tr')
+				var nameTd = document.createElement('td')
+				nameTd.className = 'shart-key'
+				nameTd.innerHTML = starRepoObject.name + ' (' + starRepoObject.stars + ')'
+				var starsTd = document.createElement('td')
+				starsTd.className = 'shart-val'
+				starsTd.innerHTML = Array(Math.ceil(starRepoObject.stars/4) + 1).join("&#9703;")
+				tr.appendChild(nameTd)
+				tr.appendChild(starsTd)
+				return tr
+			}
+		</script>
+	</body>
+</html>
